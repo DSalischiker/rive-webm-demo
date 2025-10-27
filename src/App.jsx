@@ -39,7 +39,7 @@ export default function App() {
       >
         <>
           {!isLoaded && (
-            <span style={{ color: "black" }}>Loading...</span>
+            <span style={{ color: "white" }}>Loading...</span>
           )}
           <video
             ref={videoRef}
