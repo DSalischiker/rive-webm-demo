@@ -1,96 +1,72 @@
-import { useRef, useState, useEffect } from 'react'
-import { useRive } from '@rive-app/react-canvas'
-import './App.css'
-
-const VIDEO_DIMENSIONS = '700px'
-
-function App() {
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false)
-  const videoRef = useRef(null)
-
-  const { RiveComponent, error } = useRive({
-    src: '/drgenius_framework_header_27_10.riv',
+import React from "react";
+import Rive from "@rive-app/react-canvas";
+import { useRive } from "@rive-app/react-canvas";
+import RiveAnimation from "./assets/drgenius_framework_header_27_10.riv";
+import video from "./assets/Scroll_Animation.webm";
+export default function App() {
+  const { rive, RiveComponent } = useRive({
+    src: RiveAnimation,
     autoplay: true,
-  })
+  });
 
-  useEffect(() => {
-    const videoElement = videoRef.current
-    if (videoElement) {
-      const handleLoadedData = () => {
-        setIsVideoLoaded(true)
+  const videoRef = React.useRef(null);
+  const [isLoaded, setIsLoaded] = React.useState(false);
+  React.useEffect(() => {
+    if (!videoRef.current) return;
+
+    const handleLoadedData = (event) => {
+      console.log("Loaded");
+      setIsLoaded(true);
+    };
+
+    videoRef.current.addEventListener("loadeddata", handleLoadedData);
+
+    return () => {
+      if (videoRef.current) {
+        videoRef.current.removeEventListener("loadeddata", handleLoadedData);
       }
-      
-      videoElement.addEventListener('loadeddata', handleLoadedData)
-      
-      return () => {
-        videoElement.removeEventListener('loadeddata', handleLoadedData)
-      }
-    }
-  }, [])
-
-  if (error) {
-    return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        fontSize: '24px',
-        color: 'red'
-      }}>
-        Error loading Rive animation. Please ensure drgenius_framework_header_27_10.riv is in the public folder.
-      </div>
-    )
-  }
-
-  if (!isVideoLoaded) {
-    return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        fontSize: '24px'
-      }}>
-        Loading...
-      </div>
-    )
-  }
+    };
+  }, []); // Empty dependency array
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      position: 'relative'
-    }}>
-      <div style={{ position: 'relative', width: VIDEO_DIMENSIONS, height: VIDEO_DIMENSIONS }}>
-        <video
-          ref={videoRef}
-          src="/Scroll_Animation.webm"
-          autoPlay
-          loop
-          muted
-          style={{
-            width: VIDEO_DIMENSIONS,
-            height: VIDEO_DIMENSIONS,
-            display: 'block'
-          }}
-        />
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: VIDEO_DIMENSIONS,
-          height: VIDEO_DIMENSIONS,
-          pointerEvents: 'none'
-        }}>
-          <RiveComponent />
-        </div>
+    <div className="App">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <>
+          {!isLoaded && (
+            <span style={{ color: "black" }}>Loading...</span>
+          )}
+          <video
+            ref={videoRef}
+            src={video}
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{ 
+              width: "700px", 
+              height: "700px",
+              visibility: isLoaded ? "visible" : "hidden"
+            }}
+          />
+          {isLoaded && (
+            <RiveComponent
+              style={{
+                width: "700px",
+                height: "700px",
+                position: "absolute",
+                margin: "auto",
+                pointerEvents: "none",
+              }}
+            />
+          )}
+        </>
       </div>
     </div>
-  )
+  );
 }
-
-export default App
