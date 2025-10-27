@@ -1,0 +1,5 @@
+Please add the following files to this directory:
+1. drgenius_framework_header_27_10.riv - The Rive animation file
+2. Scroll_Animation.webm - The webm video file
+
+These files are required for the application to work properly.
