@@ -14,13 +14,6 @@ A Vite React application that renders a Rive animation over a webm video to mini
 - Node.js (v16 or higher)
 - npm or yarn
 
-## Required Assets
-
-Before running the application, you need to add the following files to the `public/` directory:
-
-1. `drgenius_framework_header_27_10.riv` - The Rive animation file
-2. `Scroll_Animation.webm` - The webm video file
-
 ## Setup Instructions
 
 1. Clone the repository:
@@ -33,8 +26,6 @@ cd rive-webm-demo
 ```bash
 npm install
 ```
-
-3. Add the required asset files to the `public/` directory (see Required Assets section above)
 
 4. Start the development server:
 ```bash
@@ -60,8 +51,25 @@ npm run dev
 ## How It Works
 
 The application:
-1. Loads a webm video and a Rive animation file from the public folder
-2. Displays a "Loading..." message until the video is fully loaded
-3. Renders a 700x700px video player with autoplay and loop enabled
-4. Overlays the Rive animation on top of the video using absolute positioning
-5. The Rive animation plays automatically via the `autoplay` option in the `useRive` hook
+1. Imports the webm video and Rive animation files from `src/assets/`
+2. Displays a "Loading..." message until the video's `loadeddata` event fires
+3. The video element is rendered immediately but hidden with `visibility: hidden` until loaded
+4. Once the video is loaded (`isLoaded` becomes true):
+   - The video becomes visible with `visibility: visible`
+   - The Rive animation renders on top using absolute positioning
+5. The video plays automatically (muted and with `playsInline` for browser compatibility)
+6. Both video and Rive animation loop continuously
+7. The Rive animation has `pointerEvents: "none"` to allow interaction with the video if needed
+
+## Configuration
+
+The Vite configuration includes custom `assetsInclude` settings to handle `.riv` and `.webm` file types:
+
+```javascript
+export default defineConfig({
+  plugins: [react()],
+  assetsInclude: ['**/*.riv', '**/*.webm'],
+})
+```
+
+This allows Vite to properly import and bundle these asset types.
