@@ -2,11 +2,13 @@ import { useRef, useState, useEffect } from 'react'
 import { useRive } from '@rive-app/react-canvas'
 import './App.css'
 
+const VIDEO_DIMENSIONS = '700px'
+
 function App() {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
   const videoRef = useRef(null)
 
-  const { RiveComponent } = useRive({
+  const { RiveComponent, error } = useRive({
     src: '/drgenius_framework_header_27_10.riv',
     autoplay: true,
   })
@@ -25,6 +27,21 @@ function App() {
       }
     }
   }, [])
+
+  if (error) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        fontSize: '24px',
+        color: 'red'
+      }}>
+        Error loading Rive animation. Please ensure drgenius_framework_header_27_10.riv is in the public folder.
+      </div>
+    )
+  }
 
   if (!isVideoLoaded) {
     return (
@@ -48,7 +65,7 @@ function App() {
       height: '100vh',
       position: 'relative'
     }}>
-      <div style={{ position: 'relative', width: '700px', height: '700px' }}>
+      <div style={{ position: 'relative', width: VIDEO_DIMENSIONS, height: VIDEO_DIMENSIONS }}>
         <video
           ref={videoRef}
           src="/Scroll_Animation.webm"
@@ -56,8 +73,8 @@ function App() {
           loop
           muted
           style={{
-            width: '700px',
-            height: '700px',
+            width: VIDEO_DIMENSIONS,
+            height: VIDEO_DIMENSIONS,
             display: 'block'
           }}
         />
@@ -65,8 +82,8 @@ function App() {
           position: 'absolute',
           top: 0,
           left: 0,
-          width: '700px',
-          height: '700px',
+          width: VIDEO_DIMENSIONS,
+          height: VIDEO_DIMENSIONS,
           pointerEvents: 'none'
         }}>
           <RiveComponent />
